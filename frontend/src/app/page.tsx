@@ -1,24 +1,34 @@
+'use client'
 import Image from "next/image";
 import bannerImg from "./Images/banner.png";
 import wave from "./Images/wave.jpg";
 import React, { useState } from "react";
 import Link from "next/link";
 let initialUserObj = {
-  userName: '',
-  password:''
-}
+  userName: "",
+  password: "",
+};
+
 const Home: React.FC = () => {
   const [userObj, setNewUserObj] = useState(initialUserObj);
-  const handleChange = () => {
-    
-  }
+  const handleChange = (e:Event) => {
+    e.preventDefault();
+    const { value, name } = e.target;
+    setNewUserObj({ ...userObj, [name]: value });
+
+  };
 
   const onLogin = () => {
-    
-  }
-  const onSignup = () => {
-    
-  }
+    // console.log(userObj)
+    try {
+
+      
+      
+    } catch (error) {
+      
+    }
+  };
+  const onSignup = () => {};
   return (
     <>
       <main>
@@ -35,13 +45,32 @@ const Home: React.FC = () => {
             <h1 className="text-[5rem]">Have your best chat</h1>
             <h2 className="text-[2rem]">Fast Easy Unlimited chat services</h2>
             <div className="flex justify-between mt-12 items-center ">
-              <input type="text" className="bg-transparent border-b-2" placeholder="Enter user name" />
-              <input type="text" className="bg-transparent border-b-2" placeholder="Enter password" />
-              <button onClick={onLogin} className="bg-[#fd3b83] rounded-2xl hover:bg-[#c35a80] px-4 py-2">
+              <input
+                type="text"
+                className="bg-transparent border-b-2"
+                placeholder="Enter user name"
+                name="userName"
+                onChange={handleChange}
+              />
+              <input
+                type="text"
+                className="bg-transparent border-b-2"
+                placeholder="Enter password"
+                name="password"
+                onChange={handleChange}
+
+              />
+              <button
+                onClick={onLogin}
+                className="bg-[#fd3b83] rounded-2xl hover:bg-[#c35a80] px-4 py-2"
+              >
                 Login
               </button>
               <p>OR</p>
-              <button onClick={onSignup} className="bg-[#fd3b83] rounded-2xl hover:bg-[#c35a80] px-4 py-2">
+              <button
+                onClick={onSignup}
+                className="bg-[#fd3b83] rounded-2xl hover:bg-[#c35a80] px-4 py-2"
+              >
                 Signup
               </button>
             </div>
