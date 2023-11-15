@@ -51,14 +51,14 @@ const Home: React.FC = () => {
             <div className="flex justify-between mt-12 items-center ">
               <input
                 type="text"
-                className="bg-transparent border-b-2"
+                className="bg-transparent border-b-2 focus:outline-none"
                 placeholder="Enter user name"
                 name="userName"
                 onChange={handleChange}
               />
               <input
                 type="text"
-                className="bg-transparent border-b-2"
+                className="bg-transparent border-b-2 focus:outline-none"
                 placeholder="Enter password"
                 name="password"
                 onChange={handleChange}
