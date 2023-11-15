@@ -1,2 +1,10 @@
+// 'use client'
 
-import { legacy_createStore } from "redux";
+import { applyMiddleware, combineReducers, legacy_createStore } from "redux";
+import { userReducer } from "./user/user.reducer";
+import thunk from "redux-thunk";
+const rootReducer = combineReducers({ userReducer });
+const middleware = applyMiddleware(thunk);
+
+export const store = legacy_createStore(rootReducer,middleware)
+export type State = ReturnType<typeof rootReducer>;

@@ -17,7 +17,7 @@ userRouter.get("/single", async (req, res) => {
 
 
 userRouter.post("/signup", async (req, res) => {
-  const { userName, password } = req.body();
+  const { userName, password } = req.body;
   try {
     const existingUser = await UserModel.findOne({ userName });
     if (existingUser) {
@@ -37,7 +37,8 @@ userRouter.post("/signup", async (req, res) => {
 
 
 userRouter.post("/login", async (req, res) => {
-  const { userName, password } = req.body();
+  const { userName, password } = req.body;
+  console.log(userName)
   try {
     const existingUser = await UserModel.findOne({ userName });
     if (existingUser) {

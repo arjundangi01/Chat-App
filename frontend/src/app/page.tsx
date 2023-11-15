@@ -1,44 +1,48 @@
-'use client'
+"use client";
 import Image from "next/image";
 import bannerImg from "./Images/banner.png";
 import wave from "./Images/wave.jpg";
 import React, { useState } from "react";
 import Link from "next/link";
-let initialUserObj = {
+import { useDispatch, useSelector } from "react-redux";
+import { onLoginAction, onSignupAction } from "@/redux/user/user.action";
+import { State } from "@/redux/store";
+interface UserObj {
+  userName: string;
+  password: string;
+}
+let initialUserObj: UserObj = {
   userName: "",
   password: "",
 };
 
 const Home: React.FC = () => {
   const [userObj, setNewUserObj] = useState(initialUserObj);
-  const handleChange = (e:Event) => {
+  const dispatch = useDispatch();
+  const { error } = useSelector((store: State) => store.userReducer);
+  // console.log(store)
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     const { value, name } = e.target;
     setNewUserObj({ ...userObj, [name]: value });
-
   };
 
   const onLogin = () => {
-    // console.log(userObj)
-    try {
-
-      
-      
-    } catch (error) {
-      
-    }
+    dispatch(onLoginAction(userObj) as any);
   };
-  const onSignup = () => {};
+  const onSignup = () => {
+    dispatch(onSignupAction(userObj) as any);
+  };
   return (
     <>
       <main>
         <div
-          className="flex py-[8rem] px-[20rem]"
+          className="flex py-[6rem] px-[20rem]"
           style={{
             backgroundImage: `url(${bannerImg.src})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
-            height: "70vh",
+            height: "60vh",
           }}
         >
           <div className="text-white">
@@ -58,7 +62,6 @@ const Home: React.FC = () => {
                 placeholder="Enter password"
                 name="password"
                 onChange={handleChange}
-
               />
               <button
                 onClick={onLogin}
@@ -74,13 +77,14 @@ const Home: React.FC = () => {
                 Signup
               </button>
             </div>
+            {error && <p className="text-red-400">! {error}</p>}
           </div>
           <div>
             <img src="" alt="" />
           </div>
         </div>
         <Image className="w-[100%]" src={wave} alt="" />
-        <div className="bg-[#74e9e1] text-center text-[#243b99] py-5 ">
+        <div className="bg-[#74e9e1] text-center text-[#243b99] pb-[10rem] ">
           <h1 className="text-6xl">Instant Chat</h1>
         </div>
       </main>
