@@ -1,22 +1,33 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { IoSearchOutline } from "react-icons/io5";
 import Messages from "./messages";
 import UserCard from "./usercard";
 import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
-import { getLoginUserDetail } from "@/redux/login_user/login_user.action";
+import {  getLoginUserDetail } from "@/redux/login_user/login_user.action";
 import { State } from "@/redux/store";
+import { getAllUsers } from "@/redux/user/user.action";
 
 const Page = () => {
   const dispatch = useDispatch()
 
+  const [conversations, setconversations] = useState([]);
+  const [searchUserInput, setSearchUserInput] = useState('');
+ 
   const {loginUserDetail} = useSelector((store:State)=>store.loginUserReducer)
+  const {allUsers} = useSelector((store:State)=>store.userReducer)
   // console.log( 'from store', loginUserDetail)
+  // console.log('all', allUsers)
   useEffect(() => {
     dispatch(getLoginUserDetail() as any);
-  },[])
+  }, [])
+  useEffect(() => {
+    dispatch(getAllUsers(searchUserInput) as any);
+  }, [])
+  
+
 
   return (
     <main className="flex ">
@@ -50,14 +61,14 @@ const Page = () => {
 
           <div className="">
             {/* {map} */}
-            {[241, 122, 212, 123, 121].map((ele, index) => (
-              <UserCard key={ele} />
+            {allUsers?.map((ele, index) => (
+              <UserCard key={ele?._id} {...ele}  />
             ))}
           </div>
         </div>
       </section>
       <section className="w-[100%]   " >
-        <Messages  />
+        <Messages   />
       </section>
     </main>
   );

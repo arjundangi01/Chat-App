@@ -26,3 +26,5 @@ export const getLoginUserDetail = () => async (dispatch: Dispatch) => {
     // console.log(response);
   } catch (error) {}
 };
+
+

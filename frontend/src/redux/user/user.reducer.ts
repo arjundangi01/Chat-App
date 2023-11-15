@@ -2,6 +2,7 @@
 
 import { loginAction } from "./type";
 import {
+  ALL_USERS_SUCCESS,
   USER_LOGIN_REQUEST_SUCCESS,
   USER_SIGNUP_REQUEST_ERROR,
   USER_SIGNUP_REQUEST_SUCCESS,
@@ -9,6 +10,7 @@ import {
 
 const initialState = {
   error: "",
+  allUsers :[],
   
 };
 type Action = loginAction;
@@ -25,6 +27,8 @@ export const userReducer = (
       return { ...state,error:'' };
     case USER_SIGNUP_REQUEST_ERROR:
       return { ...state,error:payload };
+    case ALL_USERS_SUCCESS:
+      return { ...state,allUsers:payload };
     default:
       return state;
   }
