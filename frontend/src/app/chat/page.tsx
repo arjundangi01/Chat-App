@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { IoSearchOutline } from "react-icons/io5";
 import Messages from "./messages";
 import UserCard from "./usercard";
 import Image from "next/image";
@@ -26,13 +27,13 @@ const Page = () => {
         </div>
         {/* ----------------------------- */}
         <div className="border rounded-lg  mt-4 ">
-          <div className="w-full  flex justify-between h-10 ">
+          <div className="w-full  flex justify-between h-10 items-center px-2 ">
             <input
               type="text"
-              placeholder="search"
-              className="w-[100%] border ps-2"
+              placeholder="search user"
+              className="w-[100%]  ps-2 focus:outline-none"
             />
-            <button className="border">search</button>
+            <IoSearchOutline className='text-[1.5rem]' />
           </div>
           <hr className="my-2" />
 
