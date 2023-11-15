@@ -1,12 +1,23 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { IoSearchOutline } from "react-icons/io5";
 import Messages from "./messages";
 import UserCard from "./usercard";
 import Image from "next/image";
+import { useDispatch, useSelector } from "react-redux";
+import { getLoginUserDetail } from "@/redux/login_user/login_user.action";
+import { State } from "@/redux/store";
 
 const Page = () => {
+  const dispatch = useDispatch()
+
+  const {loginUserDetail} = useSelector((store:State)=>store.loginUserReducer)
+  // console.log( 'from store', loginUserDetail)
+  useEffect(() => {
+    dispatch(getLoginUserDetail() as any);
+  },[])
+
   return (
     <main className="flex ">
       <section className="md:w-[550px] border min-h-[100vh] max-h-[100vh] py-10 px-8">
@@ -19,10 +30,10 @@ const Page = () => {
           <div className="flex items-center gap-3 px-5">
             <img
               className="max-w-[4rem] rounded-[50%]  border-2 "
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRr0YlatAy-hrNCQjzZ7fqDzNiXt7HGmzVaA&usqp=CAU"
+              src={loginUserDetail?.profileImage}
               alt=""
             />
-            <p>User Name</p>
+            <p>{loginUserDetail?.userName}</p>
           </div>
         </div>
         {/* ----------------------------- */}
@@ -39,8 +50,8 @@ const Page = () => {
 
           <div className="">
             {/* {map} */}
-            {[4, 2, 2, 3, 1].map((ele, index) => (
-              <UserCard key={index} />
+            {[241, 122, 212, 123, 121].map((ele, index) => (
+              <UserCard key={ele} />
             ))}
           </div>
         </div>

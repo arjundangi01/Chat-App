@@ -31,6 +31,9 @@ const Home: React.FC = () => {
     dispatch(onLoginAction(userObj) as any);
   };
   const onSignup = () => {
+    if (userObj.userName == '' || userObj.password == '') {
+      return
+    }
     dispatch(onSignupAction(userObj) as any);
   };
   return (

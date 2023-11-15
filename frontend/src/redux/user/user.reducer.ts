@@ -9,11 +9,7 @@ import {
 
 const initialState = {
   error: "",
-  loginUserDetail: {
-    profileImage: "",
-    userName: "",
-    _id: "",
-  },
+  
 };
 type Action = loginAction;
 export const userReducer = (

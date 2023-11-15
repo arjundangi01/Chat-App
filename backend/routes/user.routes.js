@@ -2,19 +2,22 @@ const express = require("express");
 const UserModel = require("../models/user.mode");
 const bcrypt = require("bcrypt");
 var jwt = require("jsonwebtoken");
-
+const authentication = require("../middlewares/authentication");
 const userRouter = express.Router();
 userRouter.get("/", async (req, res) => {
   try {
     res.send("h");
   } catch (error) {}
 });
-userRouter.get("/single", async (req, res) => {
-    try {
-    
+userRouter.get("/single", authentication, async (req, res) => {
+  const  userId  = req.userId;
+  // console.log(userId)
+  try {
+    const user = await UserModel.findOne({ _id: userId },{password:0,__v:0});
+    // delete user.password
+    res.send({user});
   } catch (error) {}
 });
-
 
 userRouter.post("/signup", async (req, res) => {
   const { userName, password } = req.body;
@@ -34,11 +37,9 @@ userRouter.post("/signup", async (req, res) => {
   }
 });
 
-
-
 userRouter.post("/login", async (req, res) => {
   const { userName, password } = req.body;
-  console.log(userName)
+ 
   try {
     const existingUser = await UserModel.findOne({ userName });
     if (existingUser) {

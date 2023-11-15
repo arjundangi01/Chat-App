@@ -25,11 +25,11 @@ const Messages = () => {
         </div>
       </section>
       <section className=" max-h-[100%] overflow-y-scroll  h-[100%] px-10 ">
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2].map((ele, index) => (
+        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 2].map((ele, index) => (
           <>
             <MyMessage key={index} />
-            <SenderMessage key={index} />
-            <SenderMessage key={index} />
+            <SenderMessage key={ele} />
+            
           </>
         ))}
       </section>
