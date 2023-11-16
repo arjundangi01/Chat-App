@@ -20,11 +20,14 @@ messageRouter.post("/", async (req, res) => {
 });
 
 messageRouter.get("/:conversationId", async (req, res) => {
-  const { conversationId } = req.params.conversationId;
+  const { conversationId } = req.params
+  // console.log('in con get',conversationId)
   try {
     const messages = await messageModel.find({
       conversationId,
     });
+  // console.log('in con get',messages)
+
     res.send(messages);
   } catch (err) {
     res.send({ error: err });

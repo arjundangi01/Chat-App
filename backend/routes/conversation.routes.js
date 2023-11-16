@@ -6,7 +6,8 @@ const conversationRouter = express.Router();
 
 
 conversationRouter.post("/", async (req, res) => {
-    const { senderId, receiverId } = req.body;
+  const { senderId, receiverId } = req.body;
+  // console.log(senderId)
   try { 
     const existingConversation = await conversationModel.findOne({
       members: { $all: [senderId, receiverId] },
@@ -18,6 +19,7 @@ conversationRouter.post("/", async (req, res) => {
 
       return res.send(newConversation);
     }
+    // console.log('e',existingConversation)
 
     res.send(existingConversation);
   } catch (error) {
@@ -27,11 +29,13 @@ conversationRouter.post("/", async (req, res) => {
 });
 
 conversationRouter.get("/:userId", async (req, res) => {
-    const {userId} = req.params.userId
+  const { userId } = req.params
+  // console.log('get',userId)
   try {
     const userConversations = await conversationModel.find({
       members: { $in: [userId] },
     });
+    // console.log(userConversations)
     res.send(userConversations);
   } catch (err) {
     console.log(err);

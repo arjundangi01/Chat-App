@@ -20,8 +20,17 @@ userRouter.get("/",authentication, async (req, res) => {
     console.log(error)
   }
 });
-userRouter.get("/single:userId",  async (req, res) => {
-  const  userId  = req.params;
+userRouter.get("/single/:userId",  async (req, res) => {
+  const  {userId}  = req.params;
+  // console.log(userId)
+  try {
+    const user = await UserModel.findOne({ _id: userId },{password:0,__v:0});
+    // delete user.password
+    res.send({user});
+  } catch (error) {}
+});
+userRouter.get("/login_user",authentication,  async (req, res) => {
+  const  userId  = req.userId;
   // console.log(userId)
   try {
     const user = await UserModel.findOne({ _id: userId },{password:0,__v:0});

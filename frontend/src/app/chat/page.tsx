@@ -3,41 +3,101 @@
 import React, { useEffect, useState } from "react";
 import { IoSearchOutline } from "react-icons/io5";
 import Messages from "./messages";
-import {Conversation, UserCard} from "./usercard";
+import { Conversation, UserCard } from "./usercard";
 import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
-import { getLoginUserDetail } from "@/redux/login_user/login_user.action";
+import {
+  getLoginUserConversation,
+  getLoginUserDetail,
+} from "@/redux/login_user/login_user.action";
 import { State } from "@/redux/store";
 import { getAllUsers } from "@/redux/user/user.action";
 import {
   typeConversation,
   typeConversationArray,
   typeLoginUserReducer,
+  typeMessageArray,
   typeUserReducer,
 } from "@/redux/user/type";
+import axios from "axios";
 // import {State} from "../../redux/store"
 
 const Page = () => {
   const dispatch = useDispatch();
 
-  const [conversations, setConversations] = useState<typeConversationArray>([]);
+  // const [conversations, setConversations] = useState<typeConversationArray>([]);
   const [searchUserInput, setSearchUserInput] = useState("");
+  // const [currentChat, setCurrentChat] = useState<typeConversation>({
+  //   _id: "",
+  //   members: [],
+  // });
+  const [messages, setMessages] = useState<typeMessageArray>([]);
 
-  const { loginUserDetail }: typeLoginUserReducer = useSelector(
-    (store: State) => store.loginUserReducer
-  );
+  const [currentConversation, setCurrentConversation] =
+    useState<typeConversation>({
+      _id: '',
+      members: []
+    });
+
+  const { loginUserDetail, loginUserConversation }: typeLoginUserReducer =
+    useSelector((store: State) => store.loginUserReducer);
+  // console.log(loginUserConversation)
   const { allUsers }: typeUserReducer = useSelector(
     (store: State) => store.userReducer
   );
-  const onClickForSearchUser = () => {
-    
-  }
+
   useEffect(() => {
-    dispatch(getLoginUserDetail(loginUserDetail._id) as any);
+    dispatch(getLoginUserDetail() as any);
+  }, []);
+  useEffect(() => {
+    // dispatch(getLoginUserConversation(loginUserDetail._id) as any);
   }, []);
   useEffect(() => {
     dispatch(getAllUsers(searchUserInput) as any);
   }, []);
+  useEffect(() => {
+    const getMessages = async () => {
+      try {
+        const res = await axios.get(
+          `${process.env.NEXT_PUBLIC_BASE_URL}/messages/${currentConversation?._id}`
+        );
+        setMessages(res.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getMessages();
+  }, [currentConversation]);
+
+  const onClickForSearchUser = (id: string) => {
+    // console.log(loginUserConversation)
+    const findConversation = loginUserConversation.find(
+      (ele: typeConversation) => {
+        ele?.members.includes(id);
+      }
+    );
+    if (findConversation) {
+      setCurrentConversation(findConversation);
+    } else {
+      createConversation(id);
+    }
+  };
+  const createConversation = async (id: string) => {
+    try {
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/conversations`,
+        {
+          senderId: loginUserDetail._id,
+          receiverId: id,
+        }
+      );
+      dispatch(getLoginUserConversation(loginUserDetail._id) as any);
+
+      // setCurrentConversation((prev) => [...prev, res.data]);
+      // console.log(res.data)
+      setCurrentConversation(res.data);
+    } catch (error) {}
+  };
 
   return (
     <main className="flex ">
@@ -72,7 +132,11 @@ const Page = () => {
           <div className="">
             {/* {map} */}
             {allUsers?.map((ele, index) => (
-              <UserCard key={ele?._id} user={ele} onClick={onClickForSearchUser} />
+              <UserCard
+                key={ele?._id}
+                user={ele}
+                onClick={onClickForSearchUser}
+              />
             ))}
           </div>
         </div>
@@ -85,14 +149,19 @@ const Page = () => {
 
           <div className="">
             {/* {map} */}
-            {conversations?.map((ele, index) => (
-              <Conversation key={ele?._id} conversation={ele} loginUser={loginUserDetail} />
+            {loginUserConversation?.map((ele, index) => (
+              <Conversation
+                key={ele?._id}
+                conversation={ele}
+                loginUser={loginUserDetail}
+                onClick={createConversation}
+              />
             ))}
           </div>
         </div>
       </section>
       <section className="w-[100%]   ">
-        <Messages />
+        <Messages messages={ messages} conversation={currentConversation} loginUserId={loginUserDetail._id} />
       </section>
     </main>
   );

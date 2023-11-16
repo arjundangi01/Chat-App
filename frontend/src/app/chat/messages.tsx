@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { PiDotsThreeOutlineVerticalLight } from "react-icons/pi";
 import { FcVideoCall } from "react-icons/fc";
 import { FcCallback } from "react-icons/fc";
@@ -6,17 +6,69 @@ import { BsEmojiSmile } from "react-icons/bs";
 import { IoSend } from "react-icons/io5";
 import { IoMdAttach } from "react-icons/io";
 import { MyMessage, SenderMessage } from "./onemessage";
-const Messages = () => {
+import {
+  typeConversation,
+  typeMessageArray,
+  typeUserObj,
+} from "@/redux/user/type";
+import axios from "axios";
+
+interface MessagesProps {
+  messages: typeMessageArray;
+  loginUserId: string;
+  conversation: typeConversation;
+}
+
+const Messages = ({ messages, loginUserId, conversation }: MessagesProps) => {
+  const [user, setUser] = useState<typeUserObj>({
+    _id: "",
+    userName: "",
+    profileImage: "",
+  });
+
+  const [newMessage, setNewMessage] = useState('')
+
+
+  // console.log("first",conversation);
+  useEffect(() => {
+    const getUser = async () => {
+      const userId = conversation?.members.find((ele) => ele !== loginUserId);
+      // console.log("user", userId);
+
+      try {
+        const res = await axios.get(
+          `${process.env.NEXT_PUBLIC_BASE_URL}/users/single/${userId}`
+        );
+        // console.log(res.data.user);
+        setUser(res.data.user);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getUser();
+  }, [conversation]);
+
+
+  const onMessageSend = async () => {
+    try {
+      
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  
+
   return (
     <main className="flex flex-col h-[100%] max-h-[100vh] ">
       <section className="border  w-full flex justify-between items-center px-5">
         <div className="flex items-center gap-3  py-2 ">
           <img
             className="max-w-[3rem] rounded-[50%]   "
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRr0YlatAy-hrNCQjzZ7fqDzNiXt7HGmzVaA&usqp=CAU"
+            src={user?.profileImage}
             alt=""
           />
-          <p>User Name</p>
+          <p>{user?.userName}</p>
         </div>
         <div className="flex gap-10 items-center text-[1.5rem]">
           <FcVideoCall />
@@ -25,23 +77,27 @@ const Messages = () => {
         </div>
       </section>
       <section className=" max-h-[100%] overflow-y-scroll  h-[100%] px-10 ">
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 2].map((ele, index) => (
+        {messages.map((ele, index) => (
           <>
-            <MyMessage key={index} />
-            <SenderMessage key={ele} />
-            
+            {loginUserId == ele.sender ? (
+              <MyMessage key={ele._id} />
+            ) : (
+              <SenderMessage key={ele._id} />
+            )}
           </>
         ))}
       </section>
       <section className="border  w-full flex gap-8 items-center px-5 h-[4rem] self-end bottom-0">
         <BsEmojiSmile className="text-[1.5rem] text-pink-600" />
         <input
+          value={newMessage}
+          onChange={(e)=>setNewMessage(e.target.value)}
           type="text"
           className="w-[100%] focus:outline-none focus:border-transparent tracking-wide  "
           placeholder="Your message here..."
         />
         <IoMdAttach className="text-[1.5rem]" />
-        <IoSend className="text-[1.5rem] text-green-600 " />
+        <IoSend className="text-[1.5rem] text-green-600 " onClick={onMessageSend} />
       </section>
     </main>
   );

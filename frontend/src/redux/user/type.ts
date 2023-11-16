@@ -12,10 +12,11 @@ export interface typeLoginUserReducer {
     userName: string;
     _id: string;
   };
+  loginUserConversation: typeConversation[];
 }
 
 export interface typeUserObj {
-  _id?: string;
+  _id: string;
   userName?: string;
   profileImage: string;
 }
@@ -23,10 +24,19 @@ export interface typeUserReducer {
   error: string;
   allUsers: typeUserObj[];
 }
-export interface typeConversation  {
-    _id:string,
-  members:[]
+export interface typeConversation {
+  _id: string;
+  members: string[];
 }
-export interface typeConversationArray extends Array<typeConversation> { }
-    
 
+export interface typeMessage {
+  _id:string,
+  conversationId: string;
+  sender: string;
+  textSenderImage: string;
+  text: string;
+  createdAt: string;
+  updatedAt: string;
+}
+export interface typeMessageArray extends Array<typeMessage> {}
+export interface typeConversationArray extends Array<typeConversation> {}
