@@ -33,7 +33,7 @@ export interface typeMessage {
   _id:string,
   conversationId: string;
   sender: string;
-  textSenderImage: string;
+  senderImage: string;
   text: string;
   createdAt: string;
   updatedAt: string;

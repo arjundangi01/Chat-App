@@ -2,6 +2,7 @@
 
 import { loginAction, typeUserReducer } from "./type";
 import {
+  ALL_USERS_CLEAR,
   ALL_USERS_SUCCESS,
   USER_LOGIN_REQUEST_SUCCESS,
   USER_SIGNUP_REQUEST_ERROR,
@@ -29,6 +30,8 @@ export const userReducer = (
       return { ...state,error:payload };
     case ALL_USERS_SUCCESS:
       return { ...state,allUsers:payload };
+    case ALL_USERS_CLEAR:
+      return { ...state,allUsers:[] };
     default:
       return state;
   }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Dispatch, useEffect, useRef, useState } from "react";
 import { PiDotsThreeOutlineVerticalLight } from "react-icons/pi";
 import { FcVideoCall } from "react-icons/fc";
 import { FcCallback } from "react-icons/fc";
@@ -8,6 +8,7 @@ import { IoMdAttach } from "react-icons/io";
 import { MyMessage, SenderMessage } from "./onemessage";
 import {
   typeConversation,
+  typeMessage,
   typeMessageArray,
   typeUserObj,
 } from "@/redux/user/type";
@@ -17,9 +18,11 @@ interface MessagesProps {
   messages: typeMessageArray;
   loginUserId: string;
   conversation: typeConversation;
+  setMessages: React.Dispatch<React.SetStateAction<typeMessageArray>>,
+  getMessages:()=>void
 }
 
-const Messages = ({ messages, loginUserId, conversation }: MessagesProps) => {
+const Messages = ({ messages, loginUserId, conversation,setMessages,getMessages }: MessagesProps) => {
   const [user, setUser] = useState<typeUserObj>({
     _id: "",
     userName: "",
@@ -27,6 +30,7 @@ const Messages = ({ messages, loginUserId, conversation }: MessagesProps) => {
   });
 
   const [newMessage, setNewMessage] = useState('')
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
 
   // console.log("first",conversation);
@@ -50,7 +54,24 @@ const Messages = ({ messages, loginUserId, conversation }: MessagesProps) => {
 
 
   const onMessageSend = async () => {
+    if (!inputRef.current) {
+      return
+    }
     try {
+      const newObj = {
+        conversationId: conversation._id,
+        sender: loginUserId,
+        text: inputRef.current?.value,
+        senderImage: user.profileImage,
+      }
+      // setNewMessage('')
+      if (inputRef.current) {
+        inputRef.current.value = '';
+      }
+
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/messages`, newObj);
+      // console.log(response)
+      getMessages()
       
     } catch (error) {
       console.log(error)
@@ -80,9 +101,9 @@ const Messages = ({ messages, loginUserId, conversation }: MessagesProps) => {
         {messages.map((ele, index) => (
           <>
             {loginUserId == ele.sender ? (
-              <MyMessage key={ele._id} />
+              <MyMessage key={ele._id} {...ele} />
             ) : (
-              <SenderMessage key={ele._id} />
+              <SenderMessage key={ele._id} {...ele} />
             )}
           </>
         ))}
@@ -90,8 +111,14 @@ const Messages = ({ messages, loginUserId, conversation }: MessagesProps) => {
       <section className="border  w-full flex gap-8 items-center px-5 h-[4rem] self-end bottom-0">
         <BsEmojiSmile className="text-[1.5rem] text-pink-600" />
         <input
-          value={newMessage}
-          onChange={(e)=>setNewMessage(e.target.value)}
+          ref={inputRef}
+          onKeyDown={(e) => {
+            if (e.key == 'Enter') {
+              onMessageSend()
+            }
+          }}
+          // value={newMessage}
+          // onChange={(e)=>setNewMessage(e.target.value)}
           type="text"
           className="w-[100%] focus:outline-none focus:border-transparent tracking-wide  "
           placeholder="Your message here..."

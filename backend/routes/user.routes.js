@@ -4,17 +4,25 @@ const bcrypt = require("bcrypt");
 var jwt = require("jsonwebtoken");
 const authentication = require("../middlewares/authentication");
 const userRouter = express.Router();
-userRouter.get("/",authentication, async (req, res) => {
+userRouter.get("/", authentication, async (req, res) => {
   const { q } = req.query;
+  // console.log(q)
   const userId = req.userId;
   const filter = {};
   if (q) {
-    filter['userName'] = q;
+    filter['userName'] = { $regex: new RegExp("^" + q, "i") }
+    // filter['userName'] = 'shiv'
   }
+  // console.log(filter)
   try {
     const allUser = await UserModel.find(filter).limit(3);
     let index = allUser.findIndex(obj => obj._id == userId);
-    allUser.splice(index, 1);
+    // console.log(allUser)
+    // console.log(index, userId)
+    if (index >= 0) {
+      
+      allUser.splice(index, 1);
+    }
     res.send({allUser});
   } catch (error) {
     console.log(error)

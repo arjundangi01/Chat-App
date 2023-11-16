@@ -13,6 +13,8 @@ export const USER_SIGNUP_REQUEST_SUCCESS = "USER_SIGNUP_REQUEST_SUCCESS";
 export const USER_SIGNUP_REQUEST_ERROR = "USER_SIGNUP_REQUEST_ERROR";
 
 export const ALL_USERS_SUCCESS = "ALL_USERS";
+export const ALL_USERS_CLEAR = "ALL_USERS_CLEAR";
+
 interface UserObj {
   userName: string;
   password: string;
@@ -68,6 +70,9 @@ export const onSignupAction =
   };
   export const getAllUsers = (q:string) => async (dispatch: Dispatch) => {
     const userToken = Cookies.get("chat_token");
+    if (!q) {
+      return
+    }
     //   console.log(userToken);
     try {
       const response = await axios.get(
@@ -85,6 +90,6 @@ export const onSignupAction =
         type: ALL_USERS_SUCCESS,
         payload: response.data.allUser,
       });
-      // console.log(response);
+      console.log(response);
     } catch (error) {}
   };
