@@ -1,6 +1,6 @@
 "use client";
 
-import { loginAction } from "./type";
+import { loginAction, typeUserReducer } from "./type";
 import {
   ALL_USERS_SUCCESS,
   USER_LOGIN_REQUEST_SUCCESS,
@@ -8,7 +8,7 @@ import {
   USER_SIGNUP_REQUEST_SUCCESS,
 } from "./user.action";
 
-const initialState = {
+const initialState:typeUserReducer = {
   error: "",
   allUsers :[],
   

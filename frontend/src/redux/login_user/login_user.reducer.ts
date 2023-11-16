@@ -1,9 +1,9 @@
 "use client";
 
-import { loginAction } from "../user/type";
+import { loginAction, typeLoginUserReducer } from "../user/type";
 import { GET_LOGIN_USER_DETAIL_SUCCESS } from "./login_user.action";
 
-const initialState = {
+const initialState :typeLoginUserReducer = {
   error: "",
   loginUserDetail: {
     createdAt: "",
@@ -12,7 +12,7 @@ const initialState = {
     userName: "",
     _id: "",
   },
-};
+}
 type Action = loginAction;
 export const loginUserReducer = (
   state = initialState,

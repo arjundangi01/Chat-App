@@ -12,7 +12,7 @@ userRouter.get("/",authentication, async (req, res) => {
     filter['userName'] = q;
   }
   try {
-    const allUser = await UserModel.find(filter).limit(10);
+    const allUser = await UserModel.find(filter).limit(3);
     let index = allUser.findIndex(obj => obj._id == userId);
     allUser.splice(index, 1);
     res.send({allUser});
@@ -20,8 +20,8 @@ userRouter.get("/",authentication, async (req, res) => {
     console.log(error)
   }
 });
-userRouter.get("/single", authentication, async (req, res) => {
-  const  userId  = req.userId;
+userRouter.get("/single:userId",  async (req, res) => {
+  const  userId  = req.params;
   // console.log(userId)
   try {
     const user = await UserModel.findOne({ _id: userId },{password:0,__v:0});
