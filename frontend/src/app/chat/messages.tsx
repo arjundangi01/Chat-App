@@ -13,33 +13,29 @@ import {
   typeUserObj,
 } from "@/redux/user/type";
 import axios from "axios";
-import io from 'socket.io-client'
+
 
 interface MessagesProps {
   messages: typeMessageArray;
   loginUserId: string;
   conversation: typeConversation;
   setMessages: React.Dispatch<React.SetStateAction<typeMessageArray>>,
-  getMessages:()=>void
+  getMessages: () => void,
+  socket:any,
+  loginUserDetail:typeUserObj
 }
 
-const Messages = ({ messages, loginUserId, conversation,setMessages,getMessages }: MessagesProps) => {
+const Messages = ({ messages, loginUserId, conversation,setMessages,getMessages,socket,loginUserDetail }: MessagesProps) => {
   const [user, setUser] = useState<typeUserObj>({
     _id: "",
     userName: "",
     profileImage: "",
   });
-  var socket = io(`${process.env.NEXT_PUBLIC_BASE_URL}`)
+  
 
   const [newMessage, setNewMessage] = useState('')
   const inputRef = useRef<HTMLInputElement | null>(null);
-  useEffect(() => {
-    // dispatch(getAllUsers(searchUserInput) as any);
-    // socket = 
-    socket.emit('connected',user)
-   
-   
-  }, [user]);
+
 
   // console.log("first",conversation);
   useEffect(() => {
@@ -52,7 +48,7 @@ const Messages = ({ messages, loginUserId, conversation,setMessages,getMessages 
           `${process.env.NEXT_PUBLIC_BASE_URL}/users/single/${userId}`
         );
         // console.log(res.data.user);
-        setUser(res.data.user);
+        
       } catch (err) {
         console.log(err);
       }
@@ -60,7 +56,18 @@ const Messages = ({ messages, loginUserId, conversation,setMessages,getMessages 
     getUser();
   }, [conversation]);
 
+  const messageContainerRef = useRef<any>(null);
 
+  useEffect(() => {
+    // Scroll to the bottom when messages change
+    scrollToBottom();
+  }, [messages]);
+
+  const scrollToBottom = () => {
+    if (messageContainerRef.current) {
+      messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
+    }
+  };
   const onMessageSend = async () => {
     if (!inputRef.current) {
       return
@@ -70,9 +77,17 @@ const Messages = ({ messages, loginUserId, conversation,setMessages,getMessages 
         conversationId: conversation._id,
         sender: loginUserId,
         text: inputRef.current?.value,
-        senderImage: user.profileImage,
+        senderImage: loginUserDetail.profileImage,
       }
-      
+      const receiverId = conversation.members.find(
+        (member) => member !== loginUserId
+      );
+      socket?.current.emit("sendMessage", {
+        senderId: loginUserId,        
+        senderImage: loginUserDetail.profileImage,
+        receiverId,
+        text: inputRef.current?.value,
+      });
 
       // setNewMessage('')
       if (inputRef.current) {
@@ -82,8 +97,10 @@ const Messages = ({ messages, loginUserId, conversation,setMessages,getMessages 
       const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/messages`, newObj);
       // console.log(response)
       getMessages()
-      // socket = io(`${process.env.NEXT_PUBLIC_BASE_URL}`)
-      socket.emit('newMessage',newObj)
+    // setMessages((prev) => [...prev, response.data]);
+
+    
+      
       
     } catch (error) {
       console.log(error)
@@ -109,7 +126,7 @@ const Messages = ({ messages, loginUserId, conversation,setMessages,getMessages 
           <PiDotsThreeOutlineVerticalLight />
         </div>
       </section>
-      <section className=" max-h-[100%] overflow-y-scroll  h-[100%] px-10 ">
+      <section className=" max-h-[100%] overflow-y-scroll  h-[100%] px-10 " ref={messageContainerRef}>
         {messages.map((ele, index) => (
           <>
             {loginUserId == ele.sender ? (

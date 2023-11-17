@@ -25,10 +25,12 @@ import NoChat from "./no_chat";
 import io from 'socket.io-client'
 // import {State} from "../../redux/store"
 
-var socket;
+
 
 const Page = () => {
   const dispatch = useDispatch();
+  const socket = useRef<any>();
+  const [arrivalMessage, setArrivalMessage] = useState<any>({});
 
   // const [conversations, setConversations] = useState<typeConversationArray>([]);
   // const [searchUserInput, setSearchUserInput] = useState("");
@@ -59,6 +61,26 @@ const Page = () => {
   useEffect(() => {
     getMessages();
   }, [currentConversation]);
+  useEffect(() => {
+    socket.current = io("http://localhost:8080");
+    socket?.current.on("getMessage", (data:any) => {
+      setArrivalMessage({
+        sender: data.senderId,
+        text: data.text,
+        senderImage: data.senderImage,
+        createdAt: Date.now(),
+      });
+    });
+  }, []);
+  useEffect(() => {
+    arrivalMessage && currentConversation?.members.includes(arrivalMessage.sender);
+    setMessages((prev) => [...prev, arrivalMessage]);
+
+  }, [arrivalMessage, currentConversation]);
+
+  useEffect(() => {
+    socket?.current.emit("addUser", loginUserDetail._id);
+  }, [loginUserDetail]);
 
   const getMessages = async () => {
     if (!currentConversation?._id) {
@@ -203,6 +225,8 @@ const Page = () => {
             messages={messages}
             conversation={currentConversation}
             loginUserId={loginUserDetail._id}
+            loginUserDetail={loginUserDetail}
+            socket={socket}
           />
         ) : (
           <NoChat />

@@ -8,7 +8,9 @@ export const GET_LOGIN_USER_CONVERSATION_SUCCESS = "GET_LOGIN_USER_CONVERSATION_
 export const getLoginUserDetail = () => async (dispatch: Dispatch) => {
   const userToken = Cookies.get("chat_token");
   // console.log(id);
-
+  if (!userToken) {
+    window.location.href = "/";
+}
     // console.log(userToken);
   try {
     const response = await axios.get(
