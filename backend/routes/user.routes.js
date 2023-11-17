@@ -54,8 +54,9 @@ userRouter.post("/signup", async (req, res) => {
     if (existingUser) {
       res.send({ message: "User already registered" });
     } else {
-      bcrypt.hash(password, 2, function (err, hash) {
-        const newUser = UserModel.create({ userName, password: hash });
+      bcrypt.hash(password, 2, async function (err, hash) {
+        const newUser = await UserModel.create({ userName, password: hash });
+        // console.log(newUser)
         let token = jwt.sign({ userId: newUser._id }, "json_secret");
         res.send({ message: "User registered successful", token });
       });

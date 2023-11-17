@@ -9,7 +9,7 @@ export const getLoginUserDetail = () => async (dispatch: Dispatch) => {
   const userToken = Cookies.get("chat_token");
   // console.log(id);
 
-  //   console.log(userToken);
+    // console.log(userToken);
   try {
     const response = await axios.get(
       `${process.env.NEXT_PUBLIC_BASE_URL}/users/login_user`, {
@@ -19,6 +19,8 @@ export const getLoginUserDetail = () => async (dispatch: Dispatch) => {
       }
       
     );
+    // console.log(response);
+
     if (response.data?.message) {
       return;
     }

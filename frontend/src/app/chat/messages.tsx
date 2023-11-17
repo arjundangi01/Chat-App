@@ -13,6 +13,7 @@ import {
   typeUserObj,
 } from "@/redux/user/type";
 import axios from "axios";
+import io from 'socket.io-client'
 
 interface MessagesProps {
   messages: typeMessageArray;
@@ -28,10 +29,17 @@ const Messages = ({ messages, loginUserId, conversation,setMessages,getMessages 
     userName: "",
     profileImage: "",
   });
+  var socket = io(`${process.env.NEXT_PUBLIC_BASE_URL}`)
 
   const [newMessage, setNewMessage] = useState('')
   const inputRef = useRef<HTMLInputElement | null>(null);
-
+  useEffect(() => {
+    // dispatch(getAllUsers(searchUserInput) as any);
+    // socket = 
+    socket.emit('connected',user)
+   
+   
+  }, [user]);
 
   // console.log("first",conversation);
   useEffect(() => {
@@ -64,6 +72,8 @@ const Messages = ({ messages, loginUserId, conversation,setMessages,getMessages 
         text: inputRef.current?.value,
         senderImage: user.profileImage,
       }
+      
+
       // setNewMessage('')
       if (inputRef.current) {
         inputRef.current.value = '';
@@ -72,6 +82,8 @@ const Messages = ({ messages, loginUserId, conversation,setMessages,getMessages 
       const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/messages`, newObj);
       // console.log(response)
       getMessages()
+      // socket = io(`${process.env.NEXT_PUBLIC_BASE_URL}`)
+      socket.emit('newMessage',newObj)
       
     } catch (error) {
       console.log(error)

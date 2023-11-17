@@ -22,7 +22,10 @@ import {
 } from "@/redux/user/type";
 import axios from "axios";
 import NoChat from "./no_chat";
+import io from 'socket.io-client'
 // import {State} from "../../redux/store"
+
+var socket;
 
 const Page = () => {
   const dispatch = useDispatch();
@@ -52,9 +55,7 @@ const Page = () => {
   useEffect(() => {
     // dispatch(getLoginUserConversation(loginUserDetail._id) as any);
   }, []);
-  useEffect(() => {
-    // dispatch(getAllUsers(searchUserInput) as any);
-  }, []);
+ 
   useEffect(() => {
     getMessages();
   }, [currentConversation]);

@@ -60,7 +60,8 @@ export const onSignupAction =
           type: USER_SIGNUP_REQUEST_SUCCESS,
           payload: response.data.message,
         });
-      Cookies.set("chat_token", response.data.token);
+        Cookies.set("chat_token", response.data.token);
+        // dispatch({ type: USER_LOGIN_REQUEST_SUCCESS });
 
         window.location.href = "/chat";
       }

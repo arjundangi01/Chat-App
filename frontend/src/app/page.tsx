@@ -2,14 +2,14 @@
 import Image from "next/image";
 import bannerImg from "./Images/banner.png";
 import wave from "./Images/wave.jpg";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { onLoginAction, onSignupAction } from "@/redux/user/user.action";
 import { State } from "@/redux/store";
 interface UserObj {
-  userName: string;
-  password: string;
+  userName: any;
+  password: any;
 }
 let initialUserObj: UserObj = {
   userName: "",
@@ -17,24 +17,48 @@ let initialUserObj: UserObj = {
 };
 
 const Home: React.FC = () => {
-  const [userObj, setNewUserObj] = useState(initialUserObj);
+  // const [userObj, setNewUserObj] = useState(initialUserObj);
   const dispatch = useDispatch();
   const { error } = useSelector((store: State) => store.userReducer);
+ const userRef = useRef<HTMLInputElement | null>(null)
+ const passwordRef = useRef<HTMLInputElement | null>(null)
   // console.log(store)
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    const { value, name } = e.target;
-    setNewUserObj({ ...userObj, [name]: value });
-  };
+  // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   e.preventDefault();
+  //   const { value, name } = e.target;
+  //   setNewUserObj({ ...userObj, [name]: value });
+  // };
 
-  const onLogin = () => {
-    dispatch(onLoginAction(userObj) as any);
-  };
-  const onSignup = () => {
-    if (userObj.userName == '' || userObj.password == '') {
+  const onLogin = async() => {
+    if (userRef.current?.value == '' || passwordRef.current?.value == '') {
       return
     }
-    dispatch(onSignupAction(userObj) as any);
+    let userObj:UserObj = {
+      userName: userRef.current?.value,
+      password : passwordRef.current?.value
+
+    }
+    await dispatch(onLoginAction(userObj) as any);
+    if (userRef.current?.value && passwordRef.current?.value ) {
+      userRef.current.value =''
+      passwordRef.current.value = ''
+    }
+  };
+  const onSignup = async () => {
+    if (userRef.current?.value == '' || passwordRef.current?.value == '') {
+      return
+    }
+    let userObj:UserObj = {
+      userName: userRef.current?.value,
+      password : passwordRef.current?.value
+
+    }
+    await dispatch(onSignupAction(userObj) as any);
+    if (userRef.current?.value && passwordRef.current?.value ) {
+      userRef.current.value =''
+      passwordRef.current.value = ''
+    }
+   
   };
   return (
     <>
@@ -53,18 +77,20 @@ const Home: React.FC = () => {
             <h2 className="text-[2rem]">Fast Easy Unlimited chat services</h2>
             <div className="flex justify-between mt-12 items-center ">
               <input
+                ref={userRef}
                 type="text"
                 className="bg-transparent border-b-2 focus:outline-none"
                 placeholder="Enter user name"
                 name="userName"
-                onChange={handleChange}
+                // onChange={handleChange}
               />
               <input
+                ref={passwordRef}
                 type="text"
                 className="bg-transparent border-b-2 focus:outline-none"
                 placeholder="Enter password"
                 name="password"
-                onChange={handleChange}
+                // onChange={handleChange}
               />
               <button
                 onClick={onLogin}
