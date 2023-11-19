@@ -52,6 +52,7 @@ const Page = () => {
   );
 
   useEffect(() => {
+    dispatch(getAllUsers('a') as any);
     dispatch(getLoginUserDetail() as any);
   }, []);
   useEffect(() => {
@@ -73,7 +74,7 @@ const Page = () => {
     });
   }, []);
   useEffect(() => {
-    arrivalMessage && currentConversation?.members.includes(arrivalMessage.sender);
+    // arrivalMessage && currentConversation?.members.includes(arrivalMessage.sender);
     setMessages((prev) => [...prev, arrivalMessage]);
 
   }, [arrivalMessage, currentConversation]);
